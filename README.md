@@ -6,7 +6,7 @@
 - ✅ 予想の記録(構造フォーム5項目)・一覧・詳細・編集・削除
 - ✅ IndexedDB(Dexie)でローカル永続化 — repository層に隔離済み
 - ✅ PWA(manifest + Service Worker、ホーム画面追加・オフライン起動)
-- ⬜ Phase 1.5: Supabase同期(repository差し替え)
+- 🚧 Phase 1.5: Supabase同期(Auth + repository差し替え + 初回移行) — 実装済み。Vercel環境変数の登録で有効化(→ `docs/phase1.5-supabase.md`)
 - ⬜ Phase 2: AI構造化・AI答え合わせ(Anthropic API + 中継関数)
 - ⬜ Phase 3: 馬場ノート
 - ⬜ Phase 4: 検証ノート(集計)

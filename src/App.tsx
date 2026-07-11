@@ -1,7 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
+import type { Session } from '@supabase/supabase-js';
 import type { Prediction, BetType } from './types';
 import { VENUES, STATUS_LABEL } from './types';
-import { repo } from './repository';
+import { repo, setActiveRepository, localRepository, supabaseRepository } from './repository';
+import { useSession, AccountBar } from './account';
 
 type Route =
   | { name: 'home' }
@@ -12,19 +14,31 @@ type Route =
 export default function App() {
   const [route, setRoute] = useState<Route>({ name: 'home' });
   const [items, setItems] = useState<Prediction[]>([]);
+  const { session, ready } = useSession();
 
   const reload = useCallback(async () => {
     setItems(await repo.list());
   }, []);
 
-  useEffect(() => { reload(); }, [reload]);
+  // ログイン状態に応じて repository を切り替え、一覧を読み直す。
+  useEffect(() => {
+    if (!ready) return;
+    setActiveRepository(session ? supabaseRepository : localRepository);
+    reload();
+  }, [ready, session, reload]);
 
   const go = (r: Route) => { setRoute(r); window.scrollTo(0, 0); };
 
   return (
     <div className="shell">
       {route.name === 'home' && (
-        <Home items={items} onOpen={(id) => go({ name: 'detail', id })} onNew={() => go({ name: 'new' })} />
+        <Home
+          items={items}
+          session={session}
+          onSynced={reload}
+          onOpen={(id) => go({ name: 'detail', id })}
+          onNew={() => go({ name: 'new' })}
+        />
       )}
       {route.name === 'new' && (
         <PredictionForm
@@ -51,8 +65,10 @@ export default function App() {
 
 /* ---------------- Home ---------------- */
 
-function Home({ items, onOpen, onNew }: {
+function Home({ items, session, onSynced, onOpen, onNew }: {
   items: Prediction[];
+  session: Session | null;
+  onSynced: () => void;
   onOpen: (id: string) => void;
   onNew: () => void;
 }) {
@@ -65,6 +81,8 @@ function Home({ items, onOpen, onNew }: {
           <p className="sub">予想の答え合わせで、読みを鍛える</p>
         </div>
       </header>
+
+      <AccountBar session={session} onMigrated={onSynced} />
 
       {items.length === 0 ? (
         <div className="empty">
