@@ -1,0 +1,13 @@
+{
+  "name": "回顧録 — 競馬予想の検証ノート",
+  "short_name": "回顧録",
+  "description": "予想の答え合わせで、読みを鍛える",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0e0f13",
+  "theme_color": "#0e0f13",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
